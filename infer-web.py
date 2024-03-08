@@ -1744,13 +1744,13 @@ def preset_apply(preset, qfer, tmbr):
 def print_page_details():
     if cli_current_page == "HOME":
         print(
-            "\n    go home            : Takes you back to home with a navigation list."
-            "\n    go infer           : Takes you to inference command execution."
-            "\n    go pre-process     : Takes you to training step.1) pre-process command execution."
-            "\n    go extract-feature : Takes you to training step.2) extract-feature command execution."
-            "\n    go train           : Takes you to training step.3) being or continue training command execution."
-            "\n    go train-feature   : Takes you to the train feature index command execution."
-            "\n    go extract-model   : Takes you to the extract small model command execution."
+            "\n    (0)go home            : Takes you back to home with a navigation list."
+            "\n    (1)go infer           : Takes you to inference command execution."
+            "\n    (2)go pre-process     : Takes you to training step.1) pre-process command execution."
+            "\n    (3)go extract-feature : Takes you to training step.2) extract-feature command execution."
+            "\n    (4)go train           : Takes you to training step.3) being or continue training command execution."
+            "\n    (5)go train-feature   : Takes you to the train feature index command execution."
+            "\n    (6)go extract-model   : Takes you to the extract small model command execution."
         )
     elif cli_current_page == "INFER":
         print(
@@ -1778,6 +1778,7 @@ def print_page_details():
             "\n    arg 2) Trainset directory: mydataset (or) E:\\my-data-set"
             "\n    arg 3) Sample rate: 40k (32k, 40k, 48k)"
             "\n    arg 4) Number of CPU threads to use: 8 \n"
+            "\n    Next Task are (3)go extract-feature \n"
             "\nExample: mi-test mydataset 40k 24"
         )
     elif cli_current_page == "EXTRACT-FEATURE":
@@ -1789,6 +1790,7 @@ def print_page_details():
             "\n    arg 5) f0 Method: harvest (pm, harvest, dio, crepe)"
             "\n    arg 6) Crepe hop length: 128"
             "\n    arg 7) Version for pre-trained models: v2 (use either v1 or v2)\n"
+            "\n    Next Task are (4)go train \n"
             "\nExample: mi-test 0 24 1 harvest 128 v2"
         )
     elif cli_current_page == "TRAIN":
@@ -1805,6 +1807,7 @@ def print_page_details():
             "\n    arg 10) Whether to cache training set to vram: 0 (0 for no, 1 for yes)"
             "\n    arg 11) Save extracted small model every generation?: 0 (0 for no, 1 for yes)"
             "\n    arg 12) Model architecture version: v2 (use either v1 or v2)\n"
+            "\n    Next Task are (5)go train-feature \n"
             "\nExample: mi-test 40k 1 0 50 10000 8 0 0 0 0 v2"
         )
     elif cli_current_page == "TRAIN-FEATURE":
@@ -1830,6 +1833,21 @@ def change_page(page):
     return 0
 
 def execute_command(com):
+    if com == "0":
+        return change_page("HOME")
+    elif com == "1":
+        return change_page("INFER")
+    elif com == "2":
+        return change_page("PRE-PROCESS")
+    elif com == "3":
+        return change_page("EXTRACT-FEATURE")
+    elif com == "4":
+        return change_page("TRAIN")
+    elif com == "5":
+        return change_page("TRAIN-FEATURE")
+    elif com == "6":
+        return change_page("EXTRACT-MODEL")
+        
     if com == "go home":
         return change_page("HOME")
     elif com == "go infer":
