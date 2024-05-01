@@ -123,7 +123,7 @@ resample_sr = int(sys.argv[11])
 rms_mix_rate = float(sys.argv[12])
 protect = float(sys.argv[13])
 skip_exist = False
-if len(ys.argv>14):
+if len(sys.argv)>14:
     skip_exist = sys.argv[14].lower() == "true"
     print(f"skip exist {skip_exist}")
     
