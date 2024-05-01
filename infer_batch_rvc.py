@@ -14,6 +14,18 @@ import tqdm as tq
 from multiprocessing import cpu_count
 
 
+import numpy as np
+import ffmpeg
+def load_audio(file, sr):
+     out, _ = (
+                ffmpeg.input(file, threads=0)
+                .output("-", format="f32le", acodec="pcm_f32le", ac=1, ar=sr)
+                .run(
+                    cmd=["ffmpeg", "-nostdin"], capture_stdout=True, capture_stderr=True
+                )
+            )
+     return np.frombuffer(out, np.float32).flatten()
+
 class Config:
     def __init__(self, device, is_half):
         self.device = device
@@ -95,6 +107,11 @@ class Config:
 f0up_key = sys.argv[1]
 input_path = sys.argv[2]
 index_path = sys.argv[3]
+
+if index_path != "None" and not os.path.exists(index_path):
+    print(f"#### index path not found {index_path}###")
+    exit(1)
+
 f0method = sys.argv[4]  # harvest or pm
 opt_path = sys.argv[5]
 model_path = sys.argv[6]
@@ -105,6 +122,11 @@ filter_radius = int(sys.argv[10])
 resample_sr = int(sys.argv[11])
 rms_mix_rate = float(sys.argv[12])
 protect = float(sys.argv[13])
+skip_exist = False
+if len(ys.argv>14):
+    skip_exist = sys.argv[14].lower() == "true"
+    print(f"skip exist {skip_exist}")
+    
 print(sys.argv)
 config = Config(device, is_half)
 now_dir = os.getcwd()
@@ -116,7 +138,7 @@ from lib.infer_pack.models import (
     SynthesizerTrnMs768NSFsid,
     SynthesizerTrnMs768NSFsid_nono,
 )
-from my_utils import load_audio
+#from my_utils import load_audio
 from fairseq import checkpoint_utils
 from scipy.io import wavfile
 
@@ -145,6 +167,9 @@ def vc_single(sid, input_audio, f0_up_key, f0_file, f0_method, file_index, index
     f0_up_key = int(f0_up_key)
     audio = load_audio(input_audio, 16000)
     times = [0, 0, 0]
+    
+    crepe_hop_length = 160
+    
     if hubert_model == None:
         load_hubert()
     if_f0 = cpt.get("f0", 1)
@@ -167,6 +192,7 @@ def vc_single(sid, input_audio, f0_up_key, f0_file, f0_method, file_index, index
         rms_mix_rate,
         version,
         protect,
+        crepe_hop_length,
         f0_file=f0_file,
     )
     print(times)
@@ -207,9 +233,15 @@ get_vc(model_path)
 audios = os.listdir(input_path)
 for file in tq.tqdm(audios):
     if file.endswith(".wav"):
+        out_path = opt_path + "/" + file
+        if skip_exist and os.path.exists(out_path):
+            print(f"file exist and skipped {out_path}")
+            continue
         file_path = input_path + "/" + file
         wav_opt = vc_single(
             0, file_path, f0up_key, None, f0method, index_path, index_rate
         )
-        out_path = opt_path + "/" + file
+        #out_path = opt_path + "/" + file
         wavfile.write(out_path, tgt_sr, wav_opt)
+        
+
