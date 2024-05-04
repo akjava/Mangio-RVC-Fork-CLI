@@ -17,13 +17,28 @@ def process_batch_infer(key,input_dir,output_dir,index="None",method="rmvpe",ski
     print(command)
     subprocess.run(command, check=True,cwd="/notebooks/Mangio-RVC-Fork-CLI/")
 
+def list_weight_datas():
+    result = []
+    files = os.listdir("weights")
+    keys = set()
+    print("[pth list]")
+    for file in files:
+        file_name,ext = os.path.splitext(file)
+        if file.endswith(".pth"):
+            result.append(file_name)
+            key = file.split("_")[0]
+            keys.add(key)
+    return result
+
 def key_to_file(key1,key2,key3,key4=""):
     file=f"{key1}_{key2}_{key3}_result"
     if key4!="":
         file+="_"+key4
     return file+".txt"
+
+
     
-def process_whisper(audio_dir,output_dir,key1,key2,key3,key4):
+def process_whisper(audio_dir,output_dir,key1,key2,key3,key4,use_cpu=False):
     whisper_dir = "/notebooks/whisper"
 
     output_path = os.path.join(output_dir,key_to_file(key1,key2,key3,key4))
@@ -32,6 +47,8 @@ def process_whisper(audio_dir,output_dir,key1,key2,key3,key4):
         "python", "faster_whisper_batch.py", "--audio_txt", "ita04_recitation_audio_list.txt",
         "--audio_txt_dir", audio_dir, "--out",output_path
     ]
+    if use_cpu:
+        command.append("--cpu")
     print(command)
     subprocess.run(command, check=True,cwd=whisper_dir)
                             
