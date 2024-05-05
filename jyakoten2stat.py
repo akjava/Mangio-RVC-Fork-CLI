@@ -1,11 +1,12 @@
 import os
 
-dir_path = "/notebooks/jyakoTen"
+dir_path = "/notebooks/jyakoTen/"
 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--input',"-i" , help='input dir' ,default = ".")
 args = parser.parse_args()
+
 
 def parse_jyakoten_score(file_name,splitext=False):
     if file_name.find("score") == -1:
@@ -62,12 +63,16 @@ for file in files:
     
 sorted_data_list = sorted(dic_list, key=lambda x: int(x['epoch']))
 
-header = '''
-| スコア | jyakoTen-Ver | software |model | type | beam | vad | epoch | コメント
-| ----  | ---- | ---- | ----| ---- |  ---- | ---- |   ---- |   ----| '''
-print(header)
+
+epochs = []
+scores = []
 for dic in sorted_data_list:
+    epochs.append(int(dic['epoch']))
+    scores.append(float(dic['score']))
     #print(dic)
     template = f"| {dic['score']} | 0.107| faster-whisper | large-v3 | float32 |  10 | yes | Epoch {int(dic['epoch']):02d}  | 32khz batch04 rmvpe index無 | "
-    print(template)
+    #print(template)
+    
+print(f"epochs = {epochs}")
+print(f"scores = {scores}")
         

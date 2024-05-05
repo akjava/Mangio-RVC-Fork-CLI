@@ -9,7 +9,7 @@ use_cpu = False
 
 # TODO respece key
 
-key1 = "cv016" # for filter
+key1 = "cv018" # for filter
 #key2 from parsed data name
 key3 = "recitation"
 key4 = "b16-32k"
@@ -18,11 +18,9 @@ input_audio_dir = "/notebooks/01_normal/"
 rvc_audio_dir = "/notebooks/rvc_out"
 output_dir = "/notebooks/jyakoTen/"
 # remove old audios
-
-#data_list =["cv03_e20_s2000","cv03_e25_s2500","cv03_e30_s3000"]
-data_list =["cv03_e20_s540.pth"]
-data_list =["cv015_e10_s220","cv015_e50_s1100","cv015_e20_s440","cv015_e30_s660","cv015_e40_s880","cv015_e25_s550","cv015_e45_s990","cv015_e15_s330","cv015_e5_s110","cv015_e35_s770"]
-
+#"cv018_e15_s1110","cv018_e25_s1850","cv018_e5_s370","cv018_e20_s1480",
+data_list =["cv018_e10_s740","cv018_e30_s2220"]
+#data_list = ["cv017_e200_s11000"]
 for data in data_list:
     if data.endswith(".pth"):
         data = data[0:-4]
